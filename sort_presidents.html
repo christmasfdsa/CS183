@@ -1,0 +1,41 @@
+{{extend 'layout.html'}}
+
+<head>
+  <meta charset="utf-8">
+  <style>
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable div { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  </style>
+  <script>
+ $(document).ready(function(){
+    $('#sortable').sortable({
+    update: function(event, ui) {
+    	var array = $(this).sortable("toArray");
+    	var array1 = ['1 Franklin Roosevelt','2 Harry Truman','3 Dwight Eisenhower','4 John Kennedy',
+               '5 Lyndon Johnson','6 Richard Nixon','7 Gerald Ford','8 Jimmy Carter','9 Ronald Reagan',
+               '10 George Bush','11 Bill Clinton','12 George W. Bush','13 Barack Obama'];
+    	var msg = JSON.stringify(array);
+    	var msg1 = JSON.stringify(array1);
+    	$.post('{{=post_url}}', { blah: msg, sorted: msg1 }, function(data){
+    		if(data=='True'){
+    			$('#sortable').css("background-color","yellow");
+    			$('#h1').html("YOU WON");
+    		}
+    	});
+        
+    }
+    });
+    $( "#sortable" ).disableSelection();
+  });
+ </script>
+</head>
+<body>
+<h1 id="h1">Sort the Presidents</h1>
+<ul id="sortable">
+{{for president in shuffle:}}
+	<div class="ui-state-default" id="{{=president}}">{{=president}}</div>
+{{pass}}
+</ul>
+ 
+ 
+</body>

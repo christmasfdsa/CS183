@@ -1,0 +1,51 @@
+{{extend 'layout.html'}}
+<h1>Vote for Presidents</h1>
+{{block head}}
+<style>
+            .fif{
+                padding:0px;
+                display: inline
+            }
+</style>
+{{end}}
+
+{{for president in presidents:}}
+
+<div id="{{=president.id}}" class="pad">{{=president.name}} <div id="votecount{{=president.id}}" class="fif">{{=president.votecount}}</div>
+	 <button id="increment{{=president.id}}" class="btn">+</button>
+	 <button id="decrement{{=president.id}}" class="btn">-</button>
+</div>
+
+<script>
+$(document).ready(function() {
+$("#{{=president.id}}").data( "blah", {{=president.votecount}} );
+var value = $("#{{=president.id}}").data( "blah" );
+
+	$("#increment{{=president.id}}").click(function() {
+		var id = "id=" + JSON.stringify({{=president.id}});
+		$.post('{{=inc_url}}', id, function(jdata){
+			var data = JSON.parseInt(jdata);
+		});	
+		value = $("#{{=president.id}}").data( "blah" ) + 1;
+		$("#{{=president.id}}").data("blah", value);
+		$("#votecount{{=president.id}}").html(value);	
+	});
+	$("#decrement{{=president.id}}").click(function() {
+		if(value <= 0) return;
+		var id = "id=" + JSON.stringify({{=president.id}});
+		$.post('{{=dec_url}}', id, function(jdata){
+			var data = JSON.parseInt(jdata);
+		});	
+		value = $("#{{=president.id}}").data( "blah" ) - 1;
+		$("#{{=president.id}}").data( "blah", value );
+		$("#votecount{{=president.id}}").html(value);
+	});
+	$("#submit").click(function() {
+		
+	});
+});
+</script>
+
+{{pass}}
+
+<p>{{=A('Next', _class='btn', _href=URL('default','all_presidents'))}}</p>
